@@ -27,9 +27,9 @@ mer.merge_pic("xx.png")
 
 ### 效果如下
 
-[7x7图片](https://raw.githubusercontent.com/wnma3mz/qq-pic-Splice/master/imgs/output1.png)
+![7x7图片](https://raw.githubusercontent.com/wnma3mz/qq-pic-Splice/master/imgs/output1.png)
 
-[17x17图片](https://raw.githubusercontent.com/wnma3mz/qq-pic-Splice/master/imgs/output2.png)
+![17x17图片](https://raw.githubusercontent.com/wnma3mz/qq-pic-Splice/master/imgs/output2.png)
 
 
 ### TO-DO
