@@ -19,9 +19,18 @@ from merge_qq_img import Merge
 mer = Merge(uin_lst)
 # 获取头像，并解析头像为numpy数组
 mer.get_array()
-# 使用numpy进行合成，PIL保存图片
+# 使用numpy进行合成，PIL保存图片, xx.png为图片名
 mer.merge_pic("xx.png")
 ```
+
+300多个好友，大约在1分钟以内完成
+
+### 效果如下
+
+[7x7图片](https://raw.githubusercontent.com/wnma3mz/qq-pic-Splice/master/imgs/output1.png)
+
+[17x17图片](https://raw.githubusercontent.com/wnma3mz/qq-pic-Splice/master/imgs/output2.png)
+
 
 ### TO-DO
 
@@ -31,3 +40,4 @@ mer.merge_pic("xx.png")
 
 [] 添加测试代码
 
+[] 增加协程`asyncio`
