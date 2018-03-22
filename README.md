@@ -1,13 +1,13 @@
 ## 头像拼接
 
-版本说明
-
-```
+```python
+# python版本
 python: 3.6.2
 
-PIL: 4.2.1
-requests: 2.18.4
-numpy: 1.13.3
+# 第三方包
+from PIL import Image
+import requests
+import numpy as np
 ```
 
 ### API操作
@@ -27,9 +27,9 @@ mer.merge_pic("xx.png")
 
 ### 效果如下
 
-![7x7图片](https://raw.githubusercontent.com/wnma3mz/qq-pic-Splice/master/imgs/output1.png)
+![7x7图片](https://i.loli.net/2018/03/22/5ab3c57b0f193.png)
 
-![17x17图片](https://raw.githubusercontent.com/wnma3mz/qq-pic-Splice/master/imgs/output2.png)
+![17x17图片](https://i.loli.net/2018/03/22/5ab3c54081d86.png)
 
 
 ### TO-DO
