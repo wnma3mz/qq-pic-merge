@@ -34,10 +34,10 @@ mer.merge_pic("xx.png")
 
 ### TO-DO
 
-[] 规范API
+- [ ] 规范API
 
-[] 添加注释
+- [ ] 添加注释
 
-[] 添加测试代码
+- [ ] 添加测试代码
 
-[] 增加协程`asyncio`
+- [ ] 增加协程`asyncio`
