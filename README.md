@@ -14,16 +14,26 @@ import numpy as np
 
 ```python
 from merge_qq_img import Merge
+from merge_qq_img import GetQQImg
 
-# uin_lst是由QQ号构造的列表
-mer = Merge(uin_lst)
-# 获取头像，并解析头像为numpy数组
-mer.get_array()
+# 获取QQ好友QQ号的参数
+bkn = "bkn"
+cookie = "cookie"
+# uin_lst是由QQ号组成的列表
+uin_lst = list()
+
+# 实例化对象
+qq_img = GetQQImg(bkn=bkn, cookie=cookie)
+# 获取QQ好友头像，并解析头像为numpy数组
+pic_mat = qq_img.get_array()
+
+# 实例化对象
+mer = Merge(pic_mat)
 # 使用numpy进行合成，PIL保存图片, xx.png为图片名
 mer.merge_pic("xx.png")
 ```
 
-300多个好友，大约在1分钟以内完成
+时间: 300多个好友，大约在1分钟以内完成
 
 ### 效果如下
 
