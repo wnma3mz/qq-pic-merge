@@ -1,6 +1,7 @@
 # coding: utf-8
 from PIL import Image
 import numpy as np
+from random import sample
 
 
 class Merge(object):
@@ -78,7 +79,6 @@ class Merge(object):
         # 如果图片数量不符合n*n，则报错
         # assert len(picmat_lst) == (int(len(picmat_lst)**0.5))**2
 
-        # if self.pic_mat
         # 提取能够最大组成n*n的图片数量
         for i in range(30)[::-1]:
             if i**2 < len(self.pic_mat):
@@ -87,8 +87,10 @@ class Merge(object):
 
         print("组成{}x{}的图片".format(str(n), str(n)))
         print("由{}张图片组成".format(n * n))
-        # 将n传给合并行图片
-        pic_mat = self.__merge_col(self.pic_mat[:n * n], n)
+        # 随机取n*n张图片
+        pic_mat = self.__merge_col(sample(self.pic_mat, n * n), n)
+        # 顺序取n*n张
+        # pic_mat = self.__merge_col(self.pic_mat[:n * n], n)
 
         # 数组转图片
         report_img = Image.fromarray(pic_mat)

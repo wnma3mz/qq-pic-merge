@@ -28,9 +28,11 @@ class GetQQImg:
         -------
             None
         """
+        # 已经有qq好友qq号的情况
         if uin_lst != None:
             self.uin_lst = uin_lst
 
+        # 有bkn, cookie的情况，需要获取qq好友qq号
         if ((bkn != None) and (cookie != None)):
             self.bkn = bkn
             self.cookie = cookie
@@ -51,6 +53,7 @@ class GetQQImg:
         bytes:
             图片的bytes
         """
+        # 获取qq头像的链接，50表示图片大小为50*50
         url = "https://qlogo4.store.qq.com/qzone/{}/{}/50".format(snum, snum)
         img = requests.get(url).content
         return img
@@ -121,7 +124,8 @@ class GetQQImg:
         图片经过numpy转换的数组:
             array
         """
-        # if fpname == None and picbytes == None:
+
+        # 如果本地图片存在的话
         if fpname != None:
             # 将图片转换为数组
             img = Image.open("{}.png".format(fpname))
@@ -129,12 +133,14 @@ class GetQQImg:
             # 过滤不满足尺寸的图片
             if mat.shape == (50, 50, 3):
                 return mat
-            return None
+
+        # 如果图片的bytes存在的话
         if picbytes != None:
             img = Image.open(BytesIO(picbytes))
             mat = np.atleast_2d(img)[:50, :50, :3]
             if mat.shape == (50, 50, 3):
                 return mat
+
         return None
 
     def __convert_pic(self, fpname, img):
@@ -151,9 +157,13 @@ class GetQQImg:
         --------
             None
         """
+        # 转换图片格式,为了获取某些格式不正确的图片，需要本机安装了`convert`
         with open("{}.jpeg".format(fpname), "wb+") as fp:
             fp.write(img)
-        os.system("convert {}.jpeg {}.png".format(fpname, fpname))
+        try:
+            os.system("convert {}.jpeg {}.png".format(fpname, fpname))
+        except Exception:
+            pass
 
     def get_array(self, save_uin_lst=False, save_pic=False):
         """
@@ -170,7 +180,9 @@ class GetQQImg:
         图片RGB组成的矩阵:
             array
         """
+        # 获取失败图片的个数
         false_count = 0
+        # 保存qq好友qq号到本地
         if save_uin_lst:
             self.__save_data("uin_lst.pkl", self.uin_lst)
 
@@ -180,8 +192,10 @@ class GetQQImg:
             # 获取图片字节码
             img = self.__download(snum)
             mat = None
+            # 当前图片不能是QQZONE默认图片
             if (img == QQZONE_ONE_BYTES) or (img == QQZONE_TWO_BYTES):
                 continue
+            # 尝试获取当前qq号qq头像的矩阵
             try:
                 # 字节流可以直接读取
                 mat = self.__get_picarr(picbytes=img)
@@ -192,15 +206,16 @@ class GetQQImg:
                 mat = self.__get_picarr(fpname=num)
                 pic_mat.append(mat)
             except Exception as e:
-                # 图片不能被解析
+                # 图片不能被解析的时候，即获取失败
                 print(num, e)
                 false_count += 1
             finally:
+                # 不论是否获取成功，将本地缓存的图片进行删除
                 if os.path.exists("{}.jpeg".format(snum)):
                     os.remove("{}.jpeg".format(snum))
                 if os.path.exists("{}.png".format(snum)):
                     os.remove("{}.png".format(snum))
-
+        # 保存所有qq好友的qq头像的矩阵至本地
         if save_pic:
             self.__save_data("pic_mat.pkl", pic_mat)
 
@@ -223,5 +238,6 @@ class GetQQImg:
             None
         """
         import pickle
+        # 进行保存操作
         with open(fname, "wb+") as f:
             pickle.dump(data, f)
