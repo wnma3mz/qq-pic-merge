@@ -224,4 +224,4 @@ class GetQQImg:
         """
         import pickle
         with open(fname, "wb+") as f:
-            pickle.dump(f, data)
+            pickle.dump(data, f)
