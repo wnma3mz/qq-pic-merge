@@ -11,6 +11,8 @@ import numpy as np
 import asyncio
 ```
 
+关于如何获取bkn和cookie，请参考这部分[说明文档](https://github.com/wnma3mz/qq_friends_info/blob/master/docs/qqqun.md)
+
 增加了`asyncio`版本，python需要大于3.6版本，速度会稍快
 
 ### API操作
