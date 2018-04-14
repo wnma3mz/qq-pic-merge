@@ -31,14 +31,13 @@ class GetQQImg:
         # 已经有qq好友qq号的情况
         if uin_lst != None:
             self.uin_lst = uin_lst
-
         # 有bkn, cookie的情况，需要获取qq好友qq号
-        if ((bkn != None) and (cookie != None)):
+        elif ((bkn != None) and (cookie != None)):
             self.bkn = bkn
             self.cookie = cookie
             self.__get_uin_lst()
-
-        raise TypeError("please input bkn,cookie or uin_lst")
+        else:
+            raise TypeError("please input bkn,cookie or uin_lst")
 
     def __download(self, snum):
         """
