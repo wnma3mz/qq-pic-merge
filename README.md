@@ -8,13 +8,18 @@ python: 3.6.2
 from PIL import Image
 import requests
 import numpy as np
+import asyncio
 ```
+
+增加了`asyncio`版本，python需要大于3.6版本，速度会稍快
 
 ### API操作
 
 ```python
 from merge_qq_img import Merge
 from merge_qq_img import GetQQImg
+# 增加异步版本
+from merge_qq_img import AsyGetQQImg
 
 # 获取QQ好友QQ号的参数
 bkn = "bkn"
@@ -23,6 +28,8 @@ cookie = "cookie"
 uin_lst = list()
 
 qq_img = GetQQImg(bkn=bkn, cookie=cookie)
+# 增加异步版本
+qq_img = AsyGetQQImg(bkn=bkn, cookie=cookie)
 # 获取QQ好友头像，并解析头像为numpy数组， 可选择是否保存qq号，qq头像转换数组后的矩阵到本地（使用pickle模块）
 pic_mat = qq_img.get_array(save_uin_lst=False, save_pic=False)
 
