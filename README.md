@@ -22,10 +22,6 @@ from merge_qq_img import Merge
 from merge_qq_img import GetQQImg
 # 增加异步版本
 from merge_qq_img import AsyGetQQImg
-# 增加Map版本
-from merge_qq_img import MapGetQQImg
-# 增加Thread版本
-from merge_qq_img import ThreadGetQQImg
 
 # 获取QQ好友QQ号的参数
 bkn = "bkn"
@@ -33,11 +29,15 @@ cookie = "cookie"
 # uin_lst是由QQ号组成的列表， 如果已经有这个数据可以直接传给GetQQImg
 uin_lst = list()
 
-# 异步、map版本、Thread版本, 只需要改GetQQImg为相应的AsyGetQQImg、MapGetQQImg、ThreadGetQQImg
+# 异步, 只需要改GetQQImg为相应的AsyGetQQImg
 qq_img = GetQQImg(bkn=bkn, cookie=cookie)
 
-# 获取QQ好友头像，并解析头像为numpy数组， 可选择是否保存qq号，qq头像转换数组后的矩阵到本地（使用pickle模块），如果使用Thread，可以增加线程数pool_num
+# 获取QQ好友头像，并解析头像为numpy数组， 可选择是否保存qq号，qq头像转换数组后的矩阵到本地（使用pickle模块）
 pic_mat = qq_img.get_array(save_uin_lst=False, save_pic=False)
+# Map获取QQ好友头像
+pic_mat = qq_img.get_array_map(save_uin_lst=False, save_pic=False)
+# Thread获取QQ好友头像，可以自定义线程数pool_num，默认为4
+pic_mat = qq_img.get_array_thread(pool_num=4, save_uin_lst=False, save_pic=False)
 
 mer = Merge(pic_mat)
 # 使用numpy进行合成，PIL保存图片, xx.png为图片名，随机取头像拼接，所以每次运行后的图片可能不一样

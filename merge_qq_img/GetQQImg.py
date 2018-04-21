@@ -55,7 +55,29 @@ class GetQQImg:
         # 获取qq头像的链接，50表示图片大小为50*50
         url = "https://qlogo4.store.qq.com/qzone/{}/{}/50".format(snum, snum)
         img = requests.get(url).content
-        return img
+
+        mat = None
+        # 当前图片不能是QQZONE默认图片
+        if (img == QQZONE_ONE_BYTES) or (img == QQZONE_TWO_BYTES):
+            return None
+        # 尝试获取当前qq号qq头像的矩阵
+        try:
+            # 字节流可以直接读取
+            mat = self.__get_picarr(picbytes=img)
+        except OSError:
+            # 不能被直接读取，需要下载下来进行格式转换
+            self.__convert_pic(snum, img)
+            mat = self.__get_picarr(fpname=snum)
+        except Exception as e:
+            # 图片不能被解析的时候，即获取失败
+            print(snum, e)
+        finally:
+            # 不论是否获取成功，将本地缓存的图片进行删除
+            if os.path.exists("{}.jpeg".format(snum)):
+                os.remove("{}.jpeg".format(snum))
+            if os.path.exists("{}.png".format(snum)):
+                os.remove("{}.png".format(snum))
+        return mat
 
     def __get_uin_lst(self):
         """
@@ -164,6 +186,15 @@ class GetQQImg:
         except Exception:
             pass
 
+    def __NotNone(self, array):
+        try:
+            if array.shape == (50, 50, 3):
+                return True
+        except:
+            pass
+
+        return False
+
     def get_array(self, save_uin_lst=False, save_pic=False):
         """
         获取所有QQ好友头像图片的矩阵。
@@ -179,47 +210,83 @@ class GetQQImg:
         图片RGB组成的矩阵:
             array
         """
-        # 获取失败图片的个数
-        false_count = 0
         # 保存qq好友qq号到本地
         if save_uin_lst:
             self.__save_data("uin_lst.pkl", self.uin_lst)
 
-        pic_mat = []
-        for num in self.uin_lst:
-            snum = str(num)
-            # 获取图片字节码
-            img = self.__download(snum)
-            mat = None
-            # 当前图片不能是QQZONE默认图片
-            if (img == QQZONE_ONE_BYTES) or (img == QQZONE_TWO_BYTES):
-                continue
-            # 尝试获取当前qq号qq头像的矩阵
-            try:
-                # 字节流可以直接读取
-                mat = self.__get_picarr(picbytes=img)
-                pic_mat.append(mat)
-            except OSError:
-                # 不能被直接读取，需要下载下来进行格式转换
-                self.__convert_pic(snum, img)
-                mat = self.__get_picarr(fpname=num)
-                pic_mat.append(mat)
-            except Exception as e:
-                # 图片不能被解析的时候，即获取失败
-                print(num, e)
-                false_count += 1
-            finally:
-                # 不论是否获取成功，将本地缓存的图片进行删除
-                if os.path.exists("{}.jpeg".format(snum)):
-                    os.remove("{}.jpeg".format(snum))
-                if os.path.exists("{}.png".format(snum)):
-                    os.remove("{}.png".format(snum))
+        pic_mat = [self.__download(str(num)) for num in self.uin_lst]
+        pic_mat = list(filter(self.__NotNone, pic_mat))
         # 保存所有qq好友的qq头像的矩阵至本地
         if save_pic:
             self.__save_data("pic_mat.pkl", pic_mat)
 
-        print("总图片数:", len(pic_mat))
-        print("失败图片数量:", false_count)
+        print("总图片数:", len(self.uin_lst))
+        print("失败图片数量:", len(self.uin_lst) - len(pic_mat))
+        return pic_mat
+
+    def get_array_map(self, save_uin_lst=False, save_pic=False):
+        """
+        获取所有QQ好友头像图片的矩阵。
+        Parameters
+        ----------
+        save_uin_lst bool:
+            是否保存好友列表
+        save_pic bool:
+            是否保存图片数组
+
+        Returns:
+        --------
+        图片RGB组成的矩阵:
+            array
+        """
+
+        # 保存qq好友qq号到本地
+        if save_uin_lst:
+            self.__save_data("uin_lst.pkl", self.uin_lst)
+
+        pic_mat = list(
+            filter(self.__NotNone, map(self.__download, self.uin_lst)))
+
+        # 保存所有qq好友的qq头像的矩阵至本地
+        if save_pic:
+            self.__save_data("pic_mat.pkl", pic_mat)
+
+        print("总图片数:", len(self.uin_lst))
+        print("失败图片数量:", len(self.uin_lst) - len(pic_mat))
+        return pic_mat
+
+    def get_array_thread(self, pool_num=4, save_uin_lst=False, save_pic=False):
+        """
+        获取所有QQ好友头像图片的矩阵。
+        Parameters
+        ----------
+        save_uin_lst bool:
+            是否保存好友列表
+        save_pic bool:
+            是否保存图片数组
+
+        Returns:
+        --------
+        图片RGB组成的矩阵:
+            array
+        """
+
+        # 保存qq好友qq号到本地
+        if save_uin_lst:
+            self.__save_data("uin_lst.pkl", self.uin_lst)
+        from multiprocessing.dummy import Pool as ThreadPool
+        pool = ThreadPool(pool_num)
+        results = pool.map(self.__download, self.uin_lst)
+        pool.close()
+        pool.join()
+
+        pic_mat = list(filter(self.__NotNone, results))
+        # 保存所有qq好友的qq头像的矩阵至本地
+        if save_pic:
+            self.__save_data("pic_mat.pkl", pic_mat)
+
+        print("总图片数:", len(self.uin_lst))
+        print("失败图片数量:", len(self.uin_lst) - len(pic_mat))
         return pic_mat
 
     def __save_data(self, fname, data):
