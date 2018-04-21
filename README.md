@@ -22,6 +22,8 @@ from merge_qq_img import Merge
 from merge_qq_img import GetQQImg
 # 增加异步版本
 from merge_qq_img import AsyGetQQImg
+# 增加Map版本
+from merge_qq_img import MapGetQQImg
 
 # 获取QQ好友QQ号的参数
 bkn = "bkn"
@@ -29,9 +31,8 @@ cookie = "cookie"
 # uin_lst是由QQ号组成的列表， 如果已经有这个数据可以直接传给GetQQImg
 uin_lst = list()
 
+#  异步或者map版本, 只需要改GetQQImg为AsyGetQQImg或MapGetQQImg
 qq_img = GetQQImg(bkn=bkn, cookie=cookie)
-# 增加异步版本
-qq_img = AsyGetQQImg(bkn=bkn, cookie=cookie)
 # 获取QQ好友头像，并解析头像为numpy数组， 可选择是否保存qq号，qq头像转换数组后的矩阵到本地（使用pickle模块）
 pic_mat = qq_img.get_array(save_uin_lst=False, save_pic=False)
 
